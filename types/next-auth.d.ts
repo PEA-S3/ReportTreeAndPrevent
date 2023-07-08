@@ -13,6 +13,7 @@ type peaUser ={
 declare module "next-auth" {
     interface Session {
         pea?: peaUser
+        sub?: string
     }
 }
 

@@ -1,16 +1,16 @@
-import NextAuth, {  AuthOptions, Session } from "next-auth"
+import NextAuth, { AuthOptions, Session } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import { JWT } from 'next-auth/jwt';
+import { JWT } from "next-auth/jwt";
 import LineProvider from "next-auth/providers/line";
 import setJWT from "@/src/nextauth/setjwt";
 
-export const authOptions:AuthOptions = {
+export const authOptions: AuthOptions = {
   // Configure one or more authentication providers
   providers: [
     LineProvider({
       name: "line",
       clientId: process.env.NEXT_PUBLIC_LINE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET as string
+      clientSecret: process.env.NEXT_PUBLIC_LINE_CLIENT_SECRET as string,
     }),
     GoogleProvider({
       name: "google",
@@ -19,17 +19,24 @@ export const authOptions:AuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token }:{token: JWT}): Promise<JWT> {
-      return await setJWT(token)
-   },
-   async session({ session, token }: {session: Session, token: JWT}): Promise<Session>  {
+    async jwt({ token }: { token: JWT }): Promise<JWT> {
+      return await setJWT(token);
+    },
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
       if (token) {
-        session.pea = token.pea
+        session.pea = token.pea;
+        session.sub = token.sub;
       }
       return session;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
-}
+};
 
-export default NextAuth(authOptions)
+export default NextAuth(authOptions);
