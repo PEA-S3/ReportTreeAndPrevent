@@ -88,7 +88,7 @@ export default function ProfilePage({ pea }: { pea: peaUser | null }) {
       method: "POST",
       body: JSON.stringify(peaUser),
     });
-    
+
     if (res.status != 200 && res.status != 401) {
       window.alert("บางอย่างผิดพลาด ติดต่อ 099-0210912");
       return;
@@ -96,7 +96,7 @@ export default function ProfilePage({ pea }: { pea: peaUser | null }) {
 
     //ถ้าส่งไปแล้วไม่มี session จะให้ logout ออก และ ไปหน้า login
     if (res.status == 401) {
-      signOut();
+      signOut({redirect:false});
       router.push("/signin");
     }
 
