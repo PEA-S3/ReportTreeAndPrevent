@@ -15,7 +15,7 @@ export async function getServerSideProps(context: any) {
     };
   }
 
-  if(session.pea){
+  if (session.pea) {
     return {
       props: {
         pea: session.pea,
@@ -23,18 +23,18 @@ export async function getServerSideProps(context: any) {
     };
   }
 
-  return{
+  return {
     props: {
-      pea: null
-    }
-  }  
+      pea: null,
+    },
+  };
 }
 
 export default function ProfilePage({ pea }: { pea: peaUser | null }) {
   const router = useRouter();
   const [peaUser, setPeaUser] = useState<peaUser>();
-  if(pea){
-    setPeaUser(pea)
+  if (pea) {
+    setPeaUser(pea);
   }
 
   const profileTextForm = [
@@ -96,7 +96,7 @@ export default function ProfilePage({ pea }: { pea: peaUser | null }) {
 
     //ถ้าส่งไปแล้วไม่มี session จะให้ logout ออก และ ไปหน้า login
     if (res.status == 401) {
-      signOut({redirect:false});
+      signOut({ redirect: false });
       router.push("/signin");
     }
 
@@ -115,7 +115,7 @@ export default function ProfilePage({ pea }: { pea: peaUser | null }) {
             setPeaUser({ ...peaUser, karnfaifa: e.target.value });
           }}
           required
-          className="px-3 py-1 border border-slate-300 rounded-full focus:outline-slate-400  "
+          className="px-3 py-1 border border-slate-300 rounded-full focus:outline-slate-400 focus:shadow-lg  "
         >
           {peaUser?.karnfaifa ? (
             <option className="text-xs text-white" value={peaUser.karnfaifa}>
@@ -147,7 +147,7 @@ export default function ProfilePage({ pea }: { pea: peaUser | null }) {
                 onChange={(e) => item.handleChange(e)}
                 type={item.type}
                 width={"auto"}
-                className="px-3 py-1 border border-slate-300 rounded-full focus:outline-slate-400  "
+                className="px-3 py-1 border border-slate-300 rounded-full focus:outline-slate-400 focus:shadow-lg "
               />
             </>
           );

@@ -1,5 +1,4 @@
 const { default: setJWT } = require("./setjwt");
-
 import { JWT } from "next-auth/jwt";
 import "@testing-library/jest-dom";
 import * as firestore from "firebase/firestore";

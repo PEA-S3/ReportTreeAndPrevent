@@ -112,7 +112,7 @@ const Home: NextPage = () => {
       <div className="flex justify-center ">
         <button
           onClick={() => {
-            signOut({ redirect: false });
+            signOut();
           }}
           type="button"
           className="btn btn-primary"
