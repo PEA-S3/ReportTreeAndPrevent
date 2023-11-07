@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { Mitr } from "next/font/google";
+import NavBar from "@/components/navbar";
 
 const mitr = Mitr({
   subsets: ["thai"],
@@ -15,6 +16,7 @@ export default function App({
   return (
     <main className={mitr.className}>
       <SessionProvider session={session}>
+        <NavBar/>
         <Component {...pageProps} />
       </SessionProvider>
     </main>

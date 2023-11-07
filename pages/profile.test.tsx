@@ -1,12 +1,20 @@
-const { render, screen } = require("@testing-library/react");
-//const { default: SignInPage} = require("./profile")
+const { render, fireEvent, screen } = require("@testing-library/react");
+const { default: ProfilePage } = require("./profile");
 
 import { getSession } from "next-auth/react";
 import { getServerSideProps } from "./profile";
 import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
 import { peaUser } from "@/types/next-auth";
+import sendProfileForm from "@/src/sendprofileform";
 
 jest.mock("next-auth/react");
+
+jest.mock("next/router", () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock("../src/sendprofileform")
 
 describe("sign in getServerSideProps", () => {
   it("ถ้ามี session และมีข้อมูล pea จะให้ props pea", async () => {
@@ -58,10 +66,58 @@ describe("sign in getServerSideProps", () => {
   });
 });
 
-// describe("sign in Component",()=>{
-//     it("ต้องเห็นปุ่ม Sing In with google และ Sign in with line",()=>{
-//          render(<SignInPage/>);
-//          expect(screen.getByTestId("google")).toBeInTheDocument()
-//          expect(screen.getByTestId("line")).toBeInTheDocument()
-//     })
-// })
+describe("profile page Component", () => {
+  it("Submit โดยใส่ช่องบางช่องผิด หรือไม่ครบ จะไม่ call handleSubmit", async () => {
+    render(<ProfilePage pea={null} />);
+    const sendProfileForm = jest.fn()
+    
+
+    const spinButton = screen.getAllByRole("spinbutton");
+    const textBox = screen.getAllByRole("textbox");
+    const submitButton = screen.getByRole('button', { name: /submit/i })
+    const backButton = screen.getByRole('button',{name: /back/i})
+
+    await userEvent.type(textBox[0], "1234");
+    await userEvent.type(textBox[1], "1234");
+    await userEvent.type(spinButton[0], "1234");
+    await userEvent.type(spinButton[1], "test");
+    await userEvent.click(submitButton)
+
+
+    expect(spinButton).toHaveLength(2);
+    expect(submitButton).toBeInTheDocument()
+    expect(backButton).toBeInTheDocument()
+    expect(textBox).toHaveLength(2);
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    expect(textBox[0]).toHaveValue("1234");
+    expect(textBox[1]).toHaveValue("1234");
+    expect(spinButton[0]).toHaveValue(1234);
+    expect(spinButton[1]).toHaveValue(null);
+    expect(sendProfileForm.mock.calls).toHaveLength(0);
+  });
+
+  it("Submit จะไม่ call handleSubmit", async () => {
+    const peaUser:peaUser = {
+      karnfaifa: "กบษ.(ต.3)"
+    }
+    render(<ProfilePage pea={peaUser} />);
+    const sendProfileForm = jest.fn()
+
+    const spinButton = screen.getAllByRole("spinbutton");
+    const textBox = screen.getAllByRole("textbox");
+    const submitButton = screen.getByRole('button', { name: /submit/i })
+    
+
+    await userEvent.type(textBox[0], "1234");
+    await userEvent.type(textBox[1], "1234");
+    await userEvent.type(spinButton[0], "1234");
+    await userEvent.type(spinButton[1], "1234");
+    await userEvent.click(submitButton)
+    
+    expect(textBox[0]).toHaveValue("1234");
+    expect(textBox[1]).toHaveValue("1234");
+    expect(spinButton[0]).toHaveValue(1234);
+    expect(spinButton[1]).toHaveValue(1234);
+    expect(sendProfileForm.mock.calls).toHaveLength(1)
+  });
+});

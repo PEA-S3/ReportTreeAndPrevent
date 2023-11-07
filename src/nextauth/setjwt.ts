@@ -12,7 +12,11 @@ export default async function setJWT(token: JWT): Promise<JWT> {
     return token;
   }
   //ค้นห้าข้อมูล PEA ใน Firestore
-  const docRef = doc(db, process.env.NEXT_PUBLIC_USER_DB_COLLECTION as string, token.sub);
+  const docRef = doc(
+    db,
+    process.env.NEXT_PUBLIC_USER_DB_COLLECTION as string,
+    token.sub
+  );
   const docSnap = await getDoc(docRef);
   //ถ้ามีข้อมูลใน Firestore แนบ pea ลงใน token
   return docSnap.exists() ? { ...token, pea: docSnap.data() } : token;
